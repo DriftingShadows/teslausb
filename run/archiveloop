@@ -753,8 +753,6 @@ function set_sys_param() {
 
 function check_archive_interval() {
   while true; do
-    log "check_archive_interval" # Log the variables
-
     if [ ! -e "$ARCHIVE_IN_PROGRESS" ] && [ -e "$WAITING_FOR_ARCHIVE_TO_BE_UNREACHABLE" ]; then
       LAST_ARCHIVE_TIMESTAMP=0
       if [ -e "$LAST_ARCHIVE_TIMESTAMP_FILE" ]; then
@@ -762,7 +760,6 @@ function check_archive_interval() {
       fi
       current_time=$(date --utc --date "now" +%s)
       time_since_last_archive=$((current_time - LAST_ARCHIVE_TIMESTAMP))
-      log "current_time: $current_time"
       log "time_since_last_archive: $time_since_last_archive"
 
       if [ "$time_since_last_archive" -ge "$ARCHIVE_INTERVAL_SECONDS" ]; then
