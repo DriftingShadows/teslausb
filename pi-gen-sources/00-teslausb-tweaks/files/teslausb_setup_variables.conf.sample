@@ -41,6 +41,11 @@ export SHARE_PASSWORD='password'
 # The following is optional
 #export RCLONE_FLAGS=()
 
+# Set ARCHIVE_CHECK_MODE to "interval" to be ready for an archive every X hours or "unreachable" to wait for archive to be unreachable before being ready for another archive
+# Note that in interval mode, recording will be interrupted every ARCHIVE_INTERVAL_HOURS
+# export ARCHIVE_CHECK_MODE="interval"
+# export ARCHIVE_INTERVAL_HOURS=6
+
 # The DATA_DRIVE option (formerly USB_DRIVE) is used to specify that you want
 # to store recordings on a different drive than the boot drive. If you don't
 # plan on using an sd card at all (i.e. you are both booting from and storing
