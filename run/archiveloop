@@ -738,6 +738,19 @@ function wifichecker {
   }
 }
 
+function wifichecker_alt() {
+  while true; do
+    if iwconfig wlan0 | grep -q "Not-Associated"; then
+      log "restarting wifi because of: Wi-Fi not associated"
+      modprobe -r brcmfmac cfg80211 brcmutil || true
+      modprobe brcmfmac || true
+    else
+      log "wifi is connected"
+    fi
+    sleep 60
+  done
+}
+
 function set_sys_param() {
   local -r parampath="$1"
   local -r var="$2"
@@ -787,9 +800,12 @@ set_sys_param /sys/devices/system/cpu/cpufreq/policy0/scaling_governor CPU_GOVER
 snapshotloop &
 logrotator &
 wifichecker &
+# wifichecker_alt &
 
 fix_errors_in_images
 /root/bin/make_snapshot.sh nofsck
+
+connect_usb_drives_to_host
 
 if archive_is_reachable; then
   fastblink
@@ -803,11 +819,11 @@ if archive_is_reachable; then
   /root/bin/awake_stop || true
 
   doubleblink
+
+  connect_usb_drives_to_host
 else
   slowblink
 fi
-
-connect_usb_drives_to_host
 
 # Start the archive interval check in the background if the mode is interval
 if [ "$ARCHIVE_CHECK_MODE" = "interval" ]; then
@@ -815,6 +831,8 @@ if [ "$ARCHIVE_CHECK_MODE" = "interval" ]; then
 fi
 
 wait_for_archive_to_be_unreachable
+
+check_if_usb_gadget_is_mounted
 
 while true; do
   slowblink
